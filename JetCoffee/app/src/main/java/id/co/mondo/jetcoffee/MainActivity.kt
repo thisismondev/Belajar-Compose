@@ -27,9 +27,9 @@ import id.co.mondo.jetcoffee.model.dummyBestSellerMenu
 import id.co.mondo.jetcoffee.model.dummyCategory
 import id.co.mondo.jetcoffee.model.dummyMenu
 import id.co.mondo.jetcoffee.ui.components.CategoryItem
+import id.co.mondo.jetcoffee.ui.components.HomeSection
 import id.co.mondo.jetcoffee.ui.components.MenuItem
 import id.co.mondo.jetcoffee.ui.components.Search
-import id.co.mondo.jetcoffee.ui.components.SectionText
 import id.co.mondo.jetcoffee.ui.theme.JetCoffeeTheme
 
  class MainActivity : ComponentActivity() {
@@ -50,12 +50,35 @@ fun jetCoffeeApp() {
         .verticalScroll(rememberScrollState())
     ) {
         Banner()
-        SectionText(stringResource(R.string.section_category))
-        CategoryRow()
-        SectionText(stringResource(R.string.section_favorite_menu))
-        MenuRow(dummyMenu)
-        SectionText(stringResource(R.string.section_best_seller_menu))
-        MenuRow(dummyBestSellerMenu)
+//        SectionText(stringResource(R.string.section_category))
+//        CategoryRow()
+//        SectionText(stringResource(R.string.section_favorite_menu))
+//        MenuRow(dummyMenu)
+//        SectionText(stringResource(R.string.section_best_seller_menu))
+//        MenuRow(dummyBestSellerMenu)
+        HomeSection(
+            title = stringResource(R.string.section_category),
+            content = { CategoryRow() }
+        )
+//        cara pertama merupakan Best practice
+//        HomeSection(
+//            stringResource(R.string.section_favorite_menu), Modifier,{
+//                MenuRow(dummyMenu)
+//            }
+//        ) Cara ke dua
+//        HomeSection(
+//            stringResource(R.string.section_best_seller_menu)
+//        ){
+//                MenuRow(dummyBestSellerMenu)
+//            } cara ke tiga
+        HomeSection(
+            title = stringResource(R.string.section_favorite_menu),
+            content = { MenuRow(dummyMenu) }
+        )
+        HomeSection(
+            title = stringResource(R.string.section_best_seller_menu),
+            content = { MenuRow(dummyBestSellerMenu) }
+        )
     }
 }
 
