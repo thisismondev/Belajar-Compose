@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">My Temperature Converter</string>
+    <string name="stateful_converter">Stateful Convereter</string>
+    <string name="stateless_converter">Stateless Convereter</string>
+    <string name="two_way_converter">Two Way Convereter</string>
+    <string name="enter_celcius">Enter temperature in Celsius</string>
+    <string name="enter_temperature">Enter temperature in %s</string>
+    <string name="temperature_fahrenheit">Temperature in Fahrenheit : %s</string>
 </resources>
