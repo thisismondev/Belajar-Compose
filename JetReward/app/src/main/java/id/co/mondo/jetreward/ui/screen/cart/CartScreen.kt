@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,15 +27,13 @@ import id.co.mondo.jetreward.ui.ViewModelFactory
 import id.co.mondo.jetreward.ui.common.UiState
 import id.co.mondo.jetreward.ui.components.CartItem
 import id.co.mondo.jetreward.ui.components.OrderButton
-import id.co.mondo.jetreward.ui.theme.JetRewardTheme
 
 @Composable
 fun CartScreen(
     viewModel: CartViewModel = viewModel(
-        factory = ViewModelFactory(
-            Injection.provideRepository()
-        )
+        factory = ViewModelFactory(Injection.provideRepository())
     ),
+    onOrderButtonClucked: (String) -> Unit,
     modifier: Modifier =Modifier
 ){
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -49,7 +46,9 @@ fun CartScreen(
                     uiState.data,
                     onProductCountChanged = { rewardId, count ->
                         viewModel.updateOrderReward(rewardId, count)
-                    }
+                    },
+                    onOrderButtonClicked = onOrderButtonClucked
+
                 )
             }
 
@@ -64,6 +63,7 @@ fun CartScreen(
 fun CartContent(
     state: CartState,
     onProductCountChanged: (id: Long, count: Int) -> Unit,
+    onOrderButtonClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
     val sharedMessage = stringResource(
@@ -107,18 +107,10 @@ fun CartContent(
             text = stringResource(R.string.total_order, state.totalRequiredPoint),
             enabled = state.orderRewads.isNotEmpty(),
             onClick = {
-
+                onOrderButtonClicked(sharedMessage)
             },
             modifier = Modifier.padding(16.dp),
         )
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun CartScreenPreview(){
-    JetRewardTheme {
-        CartScreen()
-    }
-}
