@@ -1,22 +1,124 @@
 package id.co.mondo.jetreward.ui.screen.cart
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import id.co.mondo.jetreward.R
+import id.co.mondo.jetreward.di.Injection
+import id.co.mondo.jetreward.ui.ViewModelFactory
+import id.co.mondo.jetreward.ui.common.UiState
+import id.co.mondo.jetreward.ui.components.CartItem
+import id.co.mondo.jetreward.ui.components.OrderButton
+import id.co.mondo.jetreward.ui.theme.JetRewardTheme
 
 @Composable
 fun CartScreen(
+    viewModel: CartViewModel = viewModel(
+        factory = ViewModelFactory(
+            Injection.provideRepository()
+        )
+    ),
     modifier: Modifier =Modifier
 ){
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ){
-        Text(stringResource(R.string.menu_cart))
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState){
+            is UiState.Loading -> {
+                viewModel.getAddedOrderRewards()
+            }
+            is UiState.Success ->{
+                CartContent(
+                    uiState.data,
+                    onProductCountChanged = { rewardId, count ->
+                        viewModel.updateOrderReward(rewardId, count)
+                    }
+                )
+            }
+
+            is UiState.Error -> {}
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CartContent(
+    state: CartState,
+    onProductCountChanged: (id: Long, count: Int) -> Unit,
+    modifier: Modifier = Modifier
+){
+    val sharedMessage = stringResource(
+        R.string.share_message,
+        state.orderRewads.count(),
+        state.totalRequiredPoint
+    )
+
+    Column(modifier = modifier.fillMaxSize()) {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.menu_cart),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        )
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.weight(weight = 1f)
+        ) {
+            items(state.orderRewads, key = {it.reward.id}){ item ->
+                CartItem(
+                    rewardId = item.reward.id,
+                    image = item.reward.image,
+                    title = item.reward.title,
+                    totalPoint = item.reward.requiredPoint * item.count,
+                    count = item.count,
+                    onProductCountChanged = onProductCountChanged,
+                )
+                HorizontalDivider()
+            }
+        }
+        OrderButton(
+            text = stringResource(R.string.total_order, state.totalRequiredPoint),
+            enabled = state.orderRewads.isNotEmpty(),
+            onClick = {
+
+            },
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun CartScreenPreview(){
+    JetRewardTheme {
+        CartScreen()
     }
 }

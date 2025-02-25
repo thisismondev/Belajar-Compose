@@ -10,17 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
-    private val repository: RewardRepository
-): ViewModel() {
+class HomeViewModel(private val repository: RewardRepository): ViewModel() {
+
     private val _uiState: MutableStateFlow<UiState<List<OrderReward>>> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<List<OrderReward>>>
-        get() = _uiState
+    val uiState: StateFlow<UiState<List<OrderReward>>> get() = _uiState
 
     fun getAllRewards() {
         viewModelScope.launch {
-            repository.getAllRewards()
-                .catch {
+            repository.getAllRewards().catch {
                     _uiState.value = UiState.Error(it.message.toString())
                 }
                 .collect { orderRewards ->
