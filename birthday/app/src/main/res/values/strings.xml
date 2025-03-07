@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">birthday</string>
+    <string name="happy_birthday_text">Selamat Ulang Tahun</string>
+    <string name="signature_text">from mondo</string>
 </resources>
