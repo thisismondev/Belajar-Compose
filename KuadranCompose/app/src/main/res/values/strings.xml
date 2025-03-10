@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Kuadran Compose</string>
+    <string name="title_text">Text composable</string>
+    <string name="title_image">Image composable</string>
+    <string name="title_row">Row composable</string>
+    <string name="title_column">Column composable</string>
+    <string name="Desc_text">Displays text and follows the recommended Material Design guidelines.</string>
+    <string name="Desc_image">Creates a composable that lays out and draws a given Painter class object.</string>
+    <string name="Desc_row">A layout composable that places its children in a horizontal sequence.</string>
+    <string name="Desc_colomn">A layout composable that places its children in a vertical sequence.</string>
+</resources>
